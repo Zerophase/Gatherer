@@ -68,7 +68,43 @@ RSpec.describe Project do
 		  project.due_date = 6.months.from_now
 		  expect(project).to be_on_schedule
 	  end
-
-
   end
+
+	it "stubs an object" do
+		project = Project.new(name: "Project Greenlight")
+		allow(project).to receive(:name)
+		expect(project.name).to be_nil
+	end
+
+	it "stubs an object again" do
+		project = Project.new(name: "Project Greenlight")
+		allow(project).to receive(:name).and_return("Fred")
+		expect(project.name).to eq("Fred")
+	end
+
+	it "stubs the class" do
+		allow(Project).to receive(:where).with(1).and_return(
+			Project.new(:name => "Project Greenlight"))
+		allow(Project).to receive(:where).with(3).and_return(
+	    Project.new(:name => "Project Runway"))
+		allow(Project).to receive(:where).with(no_args).and_raise(ActiveRecord::RecordNotFound)
+		project = Project.where(1)
+		expect(project.name).to eq("Project Greenlight")
+	end
+
+  it "stubs with multiple returns" do
+	  project = Project.new
+	  allow(project).to receive(:user_count).and_return(1, 2)
+	  assert_equal(1, project.user_count)
+	  assert_equal(2, project.user_count)
+	  assert_equal(2, project.user_count) # After final return value is
+	                                      # returned always returns
+	                                      # the last value specified
+  end
+
+	it "mocks an object" do
+		mock_project = Project.new(name: "Project Greenlight")
+		expect(mock_project).to receive(:name).and_return("Fred")
+		expect(mock_project.name).to eq("Fred")
+	end
 end

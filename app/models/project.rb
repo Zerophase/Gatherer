@@ -38,4 +38,8 @@ class Project < ActiveRecord::Base
 		return false if projected_days_remaining.nan?
 		(Date.today + projected_days_remaining) <= due_date
 	end
+
+	def user_count
+		1
+	end
 end
